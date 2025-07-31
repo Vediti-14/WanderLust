@@ -3,7 +3,12 @@
 <body>
   <h3>Edit your listing</h3>
 
-  <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
+  <form 
+  action="/listings/<%= listing._id %>?_method=PUT"
+   method="POST"
+    class="needs-validation" 
+    enctype="multipart/form-data"
+    novalidate>
 
     <!-- Title -->
     <div class="mb-3">
@@ -33,16 +38,21 @@
       <div class="invalid-feedback">Please provide a description.</div>
     </div>
 
+<div class = "mb-3">
+  Original Listing image<br/>
+  <img src = "<%= originalImageUrl %>"
+  style="width: 300px; height:200px; "
+  class="img-fluid rounded" />
+</div>
+
     <!-- Image -->
     <div class="mb-3">
       <label for="image" class="form-label">Image URL</label>
       <input 
-        name="listing[image][url]" 
-        id="image"
-        value="<%= listing.image.url %>" 
-        type="text" 
-        placeholder="Image URL" 
-        class="form-control"
+        name="image" 
+        type="file" 
+         class="form-control"
+         
         
       />
     </div>
