@@ -17,6 +17,7 @@ This project allows users to explore listings, book stays, and host their own pr
 - Booking functionality
 - Host dashboard
 - Responsive design
+- With Gst toggle-function
 
 ## (In progress)
 
