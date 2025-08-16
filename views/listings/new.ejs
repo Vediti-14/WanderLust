@@ -1,0 +1,129 @@
+<% layout("/layouts/boilerplate") -%>
+<body>
+  <div class="row"> 
+    <div class="col-8 offset-2">
+      <h1>Create a New Listing</h1>
+
+      <form 
+        method="POST"
+        action="/listings" 
+        novalidate 
+        class="needs-validation"
+        enctype="multipart/form-data"
+      >
+
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input name="listing[title]" 
+            placeholder="Add a Catch title" 
+            type="text" 
+            class="form-control"
+            required/>
+          <div class="valid-feedback">Title looks good</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            name="listing[description]" 
+            class="form-control"
+            required>
+          </textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="image" class="form-label"> Upload Listing Image</label>
+          <input name="image" type="file" class="form-control" required />
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Price</label>
+            <input name="listing[price]" placeholder="Enter price"
+              class="form-control" required />
+            <div class="invalid-feedback">Please enter a valid price</div>
+          </div>
+
+          <div class="mb-3 col-md-8">
+            <label for="country" class="form-label">Country</label>
+            <input name="listing[country]" placeholder="Enter country" type="text"
+              class="form-control" required />
+            <div class="invalid-feedback">Please enter the country name</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="location" class="form-label">Location</label>
+          <input name="listing[location]" placeholder="Enter location" type="text"
+            class="form-control" required  />
+          
+          <!-- ✅ Hidden fields (leave empty, JS will fill them) -->
+          <input type="hidden" name="listing[geometry][type]" value="Point" />
+          <input type="hidden" id="lng" name="listing[geometry][coordinates][]" />
+          <input type="hidden" id="lat" name="listing[geometry][coordinates][]" />
+
+          <div class="invalid-feedback">Please enter the location</div>
+          <div id="map" style="height: 400px;" class="mb-3 mt-3"></div>
+
+          <script>
+            let map = L.map("map").setView([20.5937, 78.9629], 5); // Default India
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+              attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            }).addTo(map);
+
+            let marker;
+
+            const locationInput = document.querySelector('input[name="listing[location]"]');
+            const latInput = document.getElementById("lat");
+            const lngInput = document.getElementById("lng");
+
+            locationInput.addEventListener("change", async () => {
+              const location = locationInput.value;
+              if (!location) return;
+
+              const response = await fetch(
+                `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
+                  location
+                )}&key=<%= openCageKey %>`
+              );
+              const data = await response.json();
+
+              if (data.results.length > 0) {
+                const coords = data.results[0].geometry;
+                const latlng = [coords.lat, coords.lng];
+
+                map.setView(latlng, 13);
+
+                if (marker) {
+                  marker.setLatLng(latlng);
+                } else {
+                  marker = L.marker(latlng).addTo(map);
+                }
+
+                // Set hidden input values
+                latInput.value = coords.lat;
+                lngInput.value = coords.lng;
+              }
+            });
+          </script>
+<script>
+document.querySelector("form").addEventListener("submit", (e) => {
+  if (!latInput.value || !lngInput.value || isNaN(parseFloat(latInput.value)) || isNaN(parseFloat(lngInput.value))) {
+    e.preventDefault();
+    alert("Please enter a valid location before submitting.");
+  }
+});
+</script>
+
+          
+
+          <br/><br>
+        </div>
+
+        <button class="btn btn-dark add-btn">Add</button>
+      </form>
+    </div>
+  </div>
+</body>
