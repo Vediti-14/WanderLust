@@ -10,7 +10,7 @@ This project allows users to explore listings, book stays, and host their own pr
 - Database: MongoDB
 
 
-## 📁 Features (Planned)
+## 📁 Features 
 
 - User Authentication (Sign up / Login)
 - List & browse rental properties
@@ -19,5 +19,4 @@ This project allows users to explore listings, book stays, and host their own pr
 - Responsive design
 - With Gst toggle-function
 
-## (In progress)
 
